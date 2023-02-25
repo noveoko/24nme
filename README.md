@@ -1,4 +1,4 @@
-![logo_web.svg](Logo)
+![Logo](logo_web.svg)
 
 # 24n_me App
 
