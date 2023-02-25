@@ -1,5 +1,5 @@
 ![Logo](logo_web.svg)
 
-# 24n_me App
+# 24n_me Blog
 
 Person Name Geolocation Service
