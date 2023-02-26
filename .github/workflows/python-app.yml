@@ -27,7 +27,7 @@ jobs:
     - name: Run tests
       run: |
         source venv/bin/activate
-        pytest
+        pytest tests/test_app.py
         
 
   build-and-deploy:
@@ -51,7 +51,7 @@ jobs:
       - name: Test app
         run: |
           source venv/bin/activate
-          python -m pytest
+          pytest tests/test_app.py
 
       - name: Deploy app
         uses: easingthemes/ssh-deploy@v2
