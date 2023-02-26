@@ -1,4 +1,4 @@
-![Logo](logo_web.svg)
+![Logo](logo.svg)
 
 # 24n_me Blog
 
