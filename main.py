@@ -1,28 +1,23 @@
-def main():
-    logging.info('Starting the application')
-    # your code here
-    from flask import Flask, render_template
+from flask import Flask, render_template
+import logging
 
-    app = Flask(__name__)
+logging.info('Starting the application')
+# your code here
 
-    @app.route('/')
-    def home():
-    print('App running...')
-        return render_template('index.html')
+app = Flask(__name__)
 
-    if __name__ == '__main__':
-        app.run()
-
-
-
-    import logging
-
+@app.route('/')
+def home():
     logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s %(levelname)s: %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s: %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
     )
     logging.info('Finished running the application')
+    return render_template('index.html')
+
+    
 
 if __name__ == '__main__':
-    main()
+    app.run()
+
