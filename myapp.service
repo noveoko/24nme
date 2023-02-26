@@ -7,7 +7,7 @@ User=root
 Group=www-data
 WorkingDirectory=/root/my_flask_app
 Environment="PATH=/root/my_flask_app/venv/bin"
-ExecStart=/root/my_flask_app/venv/bin/gunicorn --workers 3 --bind unix:myapp.sock -m 007 app:app
+ExecStart=/root/my_flask_app/venv/bin/gunicorn --workers 3 --bind unix:myapp.sock -m 007 main:app
 
 [Install]
 WantedBy=multi-user.target
