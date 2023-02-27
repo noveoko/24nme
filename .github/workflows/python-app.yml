@@ -20,14 +20,14 @@ jobs:
           python-version: 3.9
 
       - name: Install dependencies
-        run: pip install pytest flask gunicorn
-
-      - name: Install dependencies from requirements.txt
-        run: pip install -r requirements.txt
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install pytest flask gunicorn
 
       - name: Test app
         run: |
-          . venv/bin/activate
+          source venv/bin/activate
           pytest tests/test_app.py
 
       - name: Deploy app
