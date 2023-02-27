@@ -1,20 +1,23 @@
-build-and-deploy:
-  runs-on: ubuntu-latest
+name: Python application
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
-    - name: Create virtual environment
-      run: python -m venv venv
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Activate virtual environment
-      run: source venv/bin/activate
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
 
     - name: Install dependencies
       run: pip install pytest flask gunicorn
@@ -22,14 +25,16 @@ build-and-deploy:
     - name: Install dependencies from requirements.txt
       run: pip install -r requirements.txt
 
-    - name: Test app
-      run: pytest tests/test_app.py
+      - name: Test app
+        run: |
+          . venv/bin/activate
+          pytest tests/test_app.py
 
-    - name: Deploy app
-      uses: easingthemes/ssh-deploy@v2
-      with:
-        server: ${{ secrets.SERVER }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        source: "."
-        target: "/var/www/myapp"
+      - name: Deploy app
+        uses: easingthemes/ssh-deploy@v2
+        with:
+          server: ${{ secrets.SERVER }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PASSWORD }}
+          source: "."
+          target: "/root/24nme.github.io"
