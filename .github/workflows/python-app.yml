@@ -19,11 +19,11 @@ jobs:
         with:
           python-version: 3.9
 
-    - name: Install dependencies
-      run: pip install pytest flask gunicorn
+      - name: Install dependencies
+        run: pip install pytest flask gunicorn
 
-    - name: Install dependencies from requirements.txt
-      run: pip install -r requirements.txt
+      - name: Install dependencies from requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Test app
         run: |
