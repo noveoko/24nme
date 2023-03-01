@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Predict Geolocation | My Awesome App
+{% endblock %}
+
+{% block content %}
+<!-- your content -->
+<div class="row">
+    <div class="col col-lg-6">
+        <h1>Geolocation Prediction Result</h1>
+        <p>The predicted geolocation for {{ person }} during the year {{ year }} is {{ geolocation }}.</p>
+    </div>
+</div>
+
+
+<button class="btn btn-primary" onclick="location.href='{{ url_for('home') }}'">Search Again</button>
+
+     <!-- end of your content-->
+{% endblock %}
+
+
