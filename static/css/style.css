@@ -121,8 +121,8 @@ nav a {
 /* CTA section styles */
 
 .cta {
-  background-color: #007bff;
-  color: #fff;
+  background-color: #a2afbe;
+  color: #151111;
   padding: 100px 0;
 }
 
@@ -151,4 +151,9 @@ footer p {
   margin: 0;
   font-size: 14px;
   color: #999;
+}
+
+
+.logo{
+  width: 150px;
 }
