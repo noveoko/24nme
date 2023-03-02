@@ -48,6 +48,6 @@ jobs:
         done
         echo "Droplet is active"
         echo "Exporting secrets to environment"
-        export SECRET_KEY="${{ secrets.SECRET_KEY }}"
+        export SECRET_KEY="${{ secrets.FLASK_SECRET_KEY }}"
         echo "Deploying code"
-        ssh root@$DROPLET_IP_ADDRESS "cd /path/to/code && git pull origin main && source myenv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput && systemctl restart gunicorn"
+        ssh root@$DROPLET_IP_ADDRESS "cd /root/apps/24nme.github.io && git pull origin main && source /root/apps/24nme.github.io/venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput && systemctl restart gunicorn"
