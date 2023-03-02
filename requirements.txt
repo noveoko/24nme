@@ -2,3 +2,4 @@ flask
 uvicorn
 pytest
 Flask-Limiter
+flask-wtf
