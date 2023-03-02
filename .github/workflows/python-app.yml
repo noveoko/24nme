@@ -1,40 +1,53 @@
-name: Python application
+name: Deploy to Digital Ocean
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
 
-      - name: Install dependencies
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install pytest flask gunicorn
+    - name: Create virtual environment
+      run: python -m venv myenv
 
-      - name: Test app
-        run: |
-          source venv/bin/activate
-          pytest tests/test_app.py
+    - name: Activate virtual environment
+      run: |
+        source myenv/bin/activate
 
-      - name: Deploy app
-        uses: easingthemes/ssh-deploy@v2
-        with:
-          server: ${{ secrets.SERVER }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.PASSWORD }}
-          source: "."
-          target: "/root/24nme.github.io"
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run tests
+      run: |
+        pytest
+
+    - name: Reset droplet and deploy code
+      if: success()
+      env:
+        DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+        DROPLET_IP_ADDRESS: 46.101.104.25
+      run: |
+        echo "Resetting droplet at $DROPLET_IP_ADDRESS"
+        doctl compute droplet-action reset $DROPLET_IP_ADDRESS -f
+        echo "Waiting for droplet to become active"
+        while [ "$(doctl compute droplet get $DROPLET_IP_ADDRESS --format Status)" != "active" ]; do
+          sleep 5
+        done
+        echo "Droplet is active"
+        echo "Exporting secrets to environment"
+        export SECRET_KEY="${{ secrets.FLASK_SECRET_KEY }}"
+        echo "Deploying code"
+        ssh root@$DROPLET_IP_ADDRESS "cd /root/apps/24nme.github.io && git pull origin main && source /root/apps/24nme.github.io/venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput && systemctl restart gunicorn"
