@@ -1,5 +1,5 @@
 flask
 uvicorn
 pytest
-Flask-Limiter
+flask-limiter
 flask-wtf
