@@ -43,3 +43,25 @@ jobs:
       run: |
         source venv/bin/activate
         pytest
+
+
+  deploy:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
+
+        - name: Setup SSH
+          uses: webfactory/ssh-agent@v0.5.0
+          with:
+            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+        - name: Reset Droplet
+          run: ssh worker@{{ secrets.SERVER_IP }} 'sudo systemctl restart your-flask-app.service'
+
+        - name: Install dependencies
+          run: ssh worker@{{ secrets.SERVER_IP }}  'sudo apt-get update && sudo apt-get install -y python3-pip python3-venv && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt'
+
+        - name: Start Flask app
+          run: ssh worker@{{ secrets.SERVER_IP }}  'source venv/bin/activate && nohup python3 app.py &'
