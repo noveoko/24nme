@@ -28,9 +28,5 @@ jobs:
         source venv/bin/activate
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-
-    - name: Set environment variable
-      run: echo "FLASK_SECRET_KEY=${{ env.FLASK_SECRET_KEY }}" >> $GITHUB_ENV
-
-    - name: Run tests
-      run: pytest
+        echo "FLASK_SECRET_KEY=${{ env.FLASK_SECRET_KEY }}" >> $GITHUB_ENV
+        pytest
