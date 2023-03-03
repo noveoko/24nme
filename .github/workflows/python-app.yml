@@ -25,6 +25,9 @@ jobs:
       run: |
         source myenv/bin/activate
 
+    - name: Assign secret key
+      run: export FLASK_SECRET_KEY="${{ secrets.FLASK_SECRET_KEY }}
+
     - name: Install dependencies
       run: |
         pip install --upgrade pip
