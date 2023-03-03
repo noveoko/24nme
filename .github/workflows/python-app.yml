@@ -22,11 +22,20 @@ jobs:
       with:
         python-version: 3.9
 
-    - name: Install dependencies
-      run: |
-        python -m venv venv
-        source venv/bin/activate
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        echo "FLASK_SECRET_KEY=${{ env.FLASK_SECRET_KEY }}" >> $GITHUB_ENV
-        pytest
+    - name: Create virtual environment
+          run: python -m venv venv
+
+        - name: Activate virtual environment
+          run: source venv/bin/activate
+
+        - name: Upgrade pip
+          run: python -m pip install --upgrade pip
+
+        - name: Install dependencies
+          run: pip install -r requirements.txt
+
+        - name: Set up environment variable
+          run: echo "FLASK_SECRET_KEY=${{ env.FLASK_SECRET_KEY }}" >> $GITHUB_ENV
+
+        - name: Run tests
+          run: pytest
