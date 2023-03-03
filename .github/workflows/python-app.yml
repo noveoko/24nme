@@ -66,11 +66,11 @@ jobs:
             doctl compute ssh-key import my-key --public-key-file=$HOME/.ssh/id_rsa.pub
             doctl compute ssh-key list
             doctl compute droplet list
-            doctl compute droplet ssh ${{ secrets.SERVER_IP }} --ssh-command="git clone https://github.com/noveoko/24nme.github.io.git && cd <repository> && gunicorn main:app -b 0.0.0.0:80"    
+            doctl compute droplet ssh ${{ secrets.SERVER_IP }} --ssh-command="git clone https://github.com/noveoko/24nme.github.io.git && cd 24nme.github.io && gunicorn main:app -b 0.0.0.0:80"    
       - name: Verify app availability
         run: |
           set -e
-          if ! curl -Is https://24n.me | head -n 1 | grep "HTTP/1.[01] [23].."; then
+          if ! curl -Is http://46.101.104.25/ | head -n 1 | grep "HTTP/1.[01] [23].."; then
             echo "Error: App is not available"
             exit 1
           fi
