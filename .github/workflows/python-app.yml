@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  FLASK_SECRET_KEY: ${{ env.FLASK_SECRET_KEY }}
+  FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
 
 jobs:
   build:
@@ -37,31 +37,33 @@ jobs:
 
     - name: Set up environment variable
       run: |
-        echo "FLASK_SECRET_KEY=${{ env.FLASK_SECRET_KEY }}" >> $GITHUB_ENV
+        echo "FLASK_SECRET_KEY=${{ secrets.FLASK_SECRET_KEY }}" >> $GITHUB_ENV
 
     - name: Run tests
       run: |
         source venv/bin/activate
         pytest
 
-
   deploy:
-      runs-on: ubuntu-latest
-
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
-
-        - name: Setup SSH
-          uses: webfactory/ssh-agent@v0.5.0
-          with:
-            ssh-private-key: ${{ env.SSH_PUBLIC_KEY }}
-
-        - name: Reset Droplet
-          run: ssh worker@{{ env.SERVER_IP }} 'sudo systemctl restart your-flask-app.service'
-
-        - name: Install dependencies
-          run: ssh worker@{{ env.SERVER_IP }}  'sudo apt-get update && sudo apt-get install -y python3-pip python3-venv && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt'
-
-        - name: Start Flask app
-          run: ssh worker@{{ env.SERVER_IP }}  'source venv/bin/activate && nohup python3 app.py &'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Deploy to DigitalOcean
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          command: |
+            doctl auth init -t "${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}"
+            doctl compute ssh-key import my-key --public-key-file=$HOME/.ssh/id_rsa.pub
+            doctl compute ssh-key list
+            doctl compute droplet list
+            doctl compute droplet ssh ${{ secrets.DROPLET_IP_ADDRESS }} --ssh-command="git clone https://github.com/noveoko/24nme.github.io.git && cd <repository> && gunicorn app:app -b 0.0.0.0:80"
