@@ -40,24 +40,3 @@ jobs:
     - name: Run tests
       run: |
         pytest
-<<<<<<< HEAD
-=======
-
-    - name: Reset droplet and deploy code
-      if: success()
-      env:
-        DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-        DROPLET_IP_ADDRESS: 46.101.104.25
-      run: |
-        echo "Resetting droplet at $DROPLET_IP_ADDRESS"
-        doctl compute droplet-action reset $DROPLET_IP_ADDRESS -f
-        echo "Waiting for droplet to become active"
-        while [ "$(doctl compute droplet get $DROPLET_IP_ADDRESS --format Status)" != "active" ]; do
-          sleep 5
-        done
-        echo "Droplet is active"
-        echo "Exporting secrets to environment"
-        export FLASK_SECRET_KEY="${{ secrets.FLASK_SECRET_KEY }}"
-        echo "Deploying code"
-        ssh root@$DROPLET_IP_ADDRESS "cd /root/apps/24nme.github.io && git pull origin main && source /root/apps/24nme.github.io/venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput && systemctl restart gunicorn"
->>>>>>> fb9ecef441e256a06061a95478769aac9370972a
