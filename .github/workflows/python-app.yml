@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
+  FLASK_SECRET_KEY: ${{ env.FLASK_SECRET_KEY }}
 
 jobs:
   build:
