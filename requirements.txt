@@ -3,4 +3,4 @@ uvicorn
 pytest
 flask-limiter
 flask-wtf
-dotenv
+python-dotenv
