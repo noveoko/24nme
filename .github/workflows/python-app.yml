@@ -66,8 +66,7 @@ jobs:
             doctl compute ssh-key import my-key --public-key-file=$HOME/.ssh/id_rsa.pub
             doctl compute ssh-key list
             doctl compute droplet list
-            doctl compute droplet ssh ${{ secrets.SERVER_IP }} --ssh-command="git clone https://github.com/noveoko/24nme.github.io.git && cd <repository> && gunicorn main:app -b 0.0.0.0:80"
-             
+            doctl compute droplet ssh ${{ secrets.SERVER_IP }} --ssh-command="git clone https://github.com/noveoko/24nme.github.io.git && cd <repository> && gunicorn main:app -b 0.0.0.0:80"    
       - name: Verify app availability
         run: |
           set -e
