@@ -1,42 +1,34 @@
-name: Deploy to Digital Ocean
+name: Flask App CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
 
 jobs:
   build:
-    strategy:
-      matrix:
-        environment: ["digital ocean"]
+
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-    - name: Set up Python
+    - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
-        python-version: '3.9'
-        environment: ${{ matrix.environment }}
-
-    - name: Create virtual environment
-      run: python -m venv myenv
-
-    - name: Activate virtual environment
-      run: |
-        source myenv/bin/activate
-
-    - name: Assign secret key
-      run: export FLASK_SECRET_KEY="${{ secrets.FLASK_SECRET_KEY }}"
+        python-version: 3.9
 
     - name: Install dependencies
       run: |
-        pip install --upgrade pip
+        python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Set environment variable
+      run: echo "FLASK_SECRET_KEY=${{ env.FLASK_SECRET_KEY }}" >> $GITHUB_ENV
+
     - name: Run tests
-      run: |
-        pytest
+      run: pytest

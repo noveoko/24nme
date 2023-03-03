@@ -7,6 +7,10 @@ from wtforms.validators import DataRequired, NumberRange
 from predict import random_country
 import logging
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 logging.basicConfig(
     level=logging.INFO,
