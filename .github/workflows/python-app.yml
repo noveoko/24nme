@@ -74,10 +74,12 @@ jobs:
     if: ${{ success() }}
     runs-on: ubuntu-latest
     steps:    
+      - name: Wait for app to become available at domain
+        run: sleep 10
       - name: Verify app availability
         run: |
           set -e
-          if ! curl -Is http://46.101.104.25/ | head -n 1 | grep "HTTP/1.[01] [23].."; then
+          if ! curl -Is https://24n.me | head -n 1 | grep "HTTP/1.[01] [23].."; then
             echo "Error: App is not available"
             exit 1
           fi
