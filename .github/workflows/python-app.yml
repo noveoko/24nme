@@ -60,9 +60,9 @@ jobs:
       - name: Deploy to DigitalOcean
         uses: digitalocean/action-doctl@v2
         with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          token: ${{ secrets.DIGITAL_OCEAN_ACCESS_TOKEN }}
           command: |
-            doctl auth init -t "${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}"
+            doctl auth init -t "${{ secrets.DIGITAL_OCEAN_ACCESS_TOKEN }}"
             doctl compute ssh-key import my-key --public-key-file=$HOME/.ssh/id_rsa.pub
             doctl compute ssh-key list
             doctl compute droplet list
