@@ -13,6 +13,18 @@ header p {
   font-size: 20px;
 }
 
+header:hover {
+  background-color: #ddd;
+}
+
+nav ul li a {
+  display: block;
+  padding: 10px;
+  color: #333;
+  text-align: center;
+  text-decoration: none;
+}
+
 nav ul {
   list-style-type: none;
   margin: 0;
@@ -55,4 +67,12 @@ footer {
 
 footer p {
   font-size: 14px;
+}
+body {
+  font-family: Arial, sans-serif;
+}
+
+.no-style {
+  text-decoration: none;
+  color: inherit;
 }

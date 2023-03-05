@@ -50,6 +50,11 @@ def predict() -> str:
     logging.info('Rendering result.html')
     return render_template('result.html', person=person_name, year=year, geolocation=prediction)
 
+@limiter.limit("1/second")
+@app.route('/docs')
+def docs():
+    return render_template('docs.html')
+
 
 if __name__ == '__main__':
     app.run()
