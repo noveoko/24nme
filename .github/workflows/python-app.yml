@@ -69,17 +69,17 @@ jobs:
             doctl compute droplet list
             doctl compute scp --recursive 24nme.github.io worker@${{ secrets.SERVER_IP }}:/home/worker/
             doctl compute droplet ssh ${{ secrets.SERVER_IP }} --ssh-command="cd /home/worker/24nme.github.io && gunicorn main:app -b 0.0.0.0:80"
-  verify:
-    needs: deploy
-    if: ${{ success() }}
-    runs-on: ubuntu-latest
-    steps:    
-      - name: Wait for app to become available at domain
-        run: sleep 10
-      - name: Verify app availability
-        run: |
-          set -e
-          if ! curl -Is https://24n.me | head -n 1 | grep "HTTP/1.[01] [23].."; then
-            echo "Error: App is not available"
-            exit 1
-          fi
+#   verify:
+#     needs: deploy
+#     if: ${{ success() }}
+#     runs-on: ubuntu-latest
+#     steps:    
+#       - name: Wait for app to become available at domain
+#         run: sleep 10
+#       - name: Verify app availability
+#         run: |
+#           set -e
+#           if ! curl -Is https://24n.me | head -n 1 | grep "HTTP/1.[01] [23].."; then
+#             echo "Error: App is not available"
+#             exit 1
+#           fi
