@@ -43,43 +43,4 @@ jobs:
       run: |
         source venv/bin/activate
         pytest
-  deploy:
-    needs: build
-    if: ${{ success() }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Deploy to DigitalOcean
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITAL_OCEAN_ACCESS_TOKEN }}
-          command: |
-            doctl auth init -t "${{ secrets.DIGITAL_OCEAN_ACCESS_TOKEN }}"
-            doctl compute ssh-key import my-key --public-key-file=$HOME/.ssh/id_rsa.pub
-            doctl compute ssh-key list
-            doctl compute droplet list
-            doctl compute scp --recursive 24nme.github.io worker@${{ secrets.SERVER_IP }}:/home/worker/
-            doctl compute droplet ssh ${{ secrets.SERVER_IP }} --ssh-command="cd /home/worker/24nme.github.io && gunicorn main:app -b 0.0.0.0:80"
-#   verify:
-#     needs: deploy
-#     if: ${{ success() }}
-#     runs-on: ubuntu-latest
-#     steps:    
-#       - name: Wait for app to become available at domain
-#         run: sleep 10
-#       - name: Verify app availability
-#         run: |
-#           set -e
-#           if ! curl -Is https://24n.me | head -n 1 | grep "HTTP/1.[01] [23].."; then
-#             echo "Error: App is not available"
-#             exit 1
-#           fi
+  
