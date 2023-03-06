@@ -2,7 +2,6 @@ Flask
 Flask-Limiter
 Flask-WTF
 WTForms
-logging
 python-dotenv
 ludwig
 pandas
