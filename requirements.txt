@@ -1,6 +1,8 @@
-flask
-gunicorn
-pytest
-flask-limiter
-flask-wtf
-python-dotenv
+Flask==2.1.4
+Flask-Limiter==1.5.1
+Flask-WTF==1.0.0
+WTForms==3.0.0
+logging==0.5.1.2
+python-dotenv==0.19.1
+ludwig==0.3.2
+pandas==1.4.0
