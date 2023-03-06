@@ -4,13 +4,16 @@ from flask_limiter.util import get_remote_address
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField
 from wtforms.validators import DataRequired, NumberRange
-from predict import random_country
 import logging
 import os
 from dotenv import load_dotenv
+from ludwig.api import LudwigModel
+import pandas as pd
+from functools import partial
+import prediction
+
 
 load_dotenv()
-
 
 logging.basicConfig(
     level=logging.INFO,
@@ -23,6 +26,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY')
 
 limiter = Limiter(key_func=get_remote_address)
+
+
 
 class PredictForm(FlaskForm):
     person_name = StringField('Person Name', validators=[DataRequired()])
@@ -45,10 +50,10 @@ def predict() -> str:
     year: int = int(request.form['year'])
 
     # perform prediction based on person_name and year
-    prediction: str = random_country()
+    final_prediction = prediction.predict_location(person_name, year)["location_predictions"]
 
     logging.info('Rendering result.html')
-    return render_template('result.html', person=person_name, year=year, geolocation=prediction)
+    return render_template('result.html', person=person_name, year=year, geolocation=final_prediction)
 
 @limiter.limit("1/second")
 @app.route('/docs')
@@ -57,4 +62,4 @@ def docs():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

@@ -1,7 +1,7 @@
 {
     "checksum": "uNHewkWJvD_P3W3diURyaQ==",
-    "data_train_hdf5_fp": "/content/training_data.training.hdf5",
-    "dataset_src": "/content/training_data.csv",
+    "data_train_hdf5_fp": "training_data.training.hdf5",
+    "dataset_src": "training_data.csv",
     "location": {
         "idx2str": [
             "US",
