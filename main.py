@@ -67,6 +67,6 @@ def docs():
 
 
 if __name__ == '__main__':
-    process = Popen(['ludwig', 'serve', '--model_path', './model', '--port', '7546'])
-    process.wait()  # Wait until Popen finishes executing
+    #process = Popen(['ludwig', 'serve', '--model_path', './model', '--port', '7546'])
+    #process.wait()  # Wait until Popen finishes executing
     app.run()
