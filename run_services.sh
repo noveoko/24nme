@@ -1,1 +1,0 @@
-ludwig serve --model_path ./model --port 7546 

@@ -1,2 +1,1 @@
-web: gunicorn main:app --workers 2
-release: bash run_services.sh
+web: gunicorn main:app --workers 3

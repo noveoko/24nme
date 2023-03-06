@@ -11,7 +11,8 @@ from ludwig.api import LudwigModel
 import pandas as pd
 from functools import partial
 import prediction
-
+from subprocess import Popen
+import json
 
 load_dotenv()
 
@@ -50,10 +51,14 @@ def predict() -> str:
     year: int = int(request.form['year'])
 
     # perform prediction based on person_name and year
-    final_prediction = prediction.predict_location(person_name, year)["location_predictions"]
+    top_5_countries_string = prediction.predict_location(person_name, year)
+
+
+    with open('last_prediction.json', 'w') as fx:
+        fx.write(top_5_countries_string)
 
     logging.info('Rendering result.html')
-    return render_template('result.html', person=person_name, year=year, geolocation=final_prediction)
+    return render_template('result.html', person=person_name, year=year, geolocation=top_5_countries_string)
 
 @limiter.limit("1/second")
 @app.route('/docs')
@@ -62,4 +67,6 @@ def docs():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    process = Popen(['ludwig', 'serve', '--model_path', './model', '--port', '7546'])
+    process.wait()  # Wait until Popen finishes executing
+    app.run()
