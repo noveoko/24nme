@@ -20,11 +20,11 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.0
         with:
           ssh-private-key: ${{ env.SSH_PRIVATE_KEY }}
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
           eval $(ssh-agent)
+          export SSH_AUTH_SOCK="${SSH_AUTH_SOCK}"
           ssh-add - <<< "${{ secrets.SSH_PASSPHRASE }}"
+
 
       - name: Install dependencies
         run: |
