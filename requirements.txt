@@ -1,7 +1,0 @@
-Flask
-Flask-Limiter
-Flask-WTF
-WTForms
-python-dotenv
-ludwig
-pandas
