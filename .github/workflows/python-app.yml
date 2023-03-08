@@ -1,46 +1,53 @@
-name: Flask App CI
+name: Deploy FastAPI app
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches: [main]
 
 env:
-  FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+  SERVER_IP: <your server IP>
 
 jobs:
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
+      - name: Set up SSH keys
+        uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: ${{ env.SSH_PRIVATE_KEY }}
 
-    - name: Create virtual environment
-      run: python -m venv venv
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nginx python3-pip
+          sudo pip3 install fastapi uvicorn
 
-    - name: Activate virtual environment
-      run: source venv/bin/activate
+      - name: Build and start app
+        run: |
+          sudo systemctl stop fastapi.service || true
+          sudo systemctl disable fastapi.service || true
+          sudo rm -f /etc/systemd/system/fastapi.service
+          sudo touch /etc/systemd/system/fastapi.service
+          sudo chmod 664 /etc/systemd/system/fastapi.service
 
-    - name: Upgrade pip
-      run: python -m pip install --upgrade pip
+          echo "[Unit]
+          Description=FastAPI App
+          After=network.target
 
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
+          [Service]
+          User=$SSH_USERNAME
+          WorkingDirectory=$GITHUB_WORKSPACE
+          ExecStart=/usr/local/bin/uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 80
+          Restart=always
 
-    - name: Set up environment variable
-      run: |
-        echo "FLASK_SECRET_KEY=${{ secrets.FLASK_SECRET_KEY }}" >> $GITHUB_ENV
+          [Install]
+          WantedBy=multi-user.target" | sudo tee /etc/systemd/system/fastapi.service >/dev/null
 
-    - name: Run tests
-      run: |
-        source venv/bin/activate
-        pytest
-  
+          sudo systemctl daemon-reload
+          sudo systemctl enable fastapi.service
+          sudo systemctl restart fastapi.service
