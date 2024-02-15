@@ -97,10 +97,13 @@ def parse_long_names(parts):
         raise ValueError(f"Unable to parse this name using PLN\n{parts}")
             
 def parse_name(name, suffixes=suffixes, prefixes=prefixes):
+    if name == '':
+        return None
     surname_prefixes = [a.lower() for a in prefixes]
     person_name = {"first_name":None, "middle_name":None, "last_name":None}
     name = name.split("(")[0]
     parts = [a.strip() for a in name.split("_") if a.strip()]
+    try:
     if len(parts) == 3:
         person_name = dict(zip(person_name.keys(), parts))
         middle_name = person_name['middle_name']
