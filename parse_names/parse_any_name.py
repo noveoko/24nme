@@ -103,7 +103,6 @@ def parse_name(name, suffixes=suffixes, prefixes=prefixes):
     person_name = {"first_name":None, "middle_name":None, "last_name":None}
     name = name.split("(")[0]
     parts = [a.strip() for a in name.split("_") if a.strip()]
-    try:
     if len(parts) == 3:
         person_name = dict(zip(person_name.keys(), parts))
         middle_name = person_name['middle_name']
@@ -119,5 +118,5 @@ def parse_name(name, suffixes=suffixes, prefixes=prefixes):
     elif len(parts) > 3:
         person_name = parse_long_names(parts)
     else:
-        raise ValueError(f"No logic to parse this name\n{name}")
+        return None
     return person_name
