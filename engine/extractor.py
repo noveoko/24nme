@@ -3,6 +3,13 @@ from typing import Optional, Dict, List
 from io import StringIO
 import json
 
+import builtins
+
+# Check if 'profile' is injected by a profiler. 
+# If not, define a pass-through decorator so the code runs normally.
+if 'profile' not in dir(builtins):
+    def profile(func):
+        return func
 
 class WikiTableExtractor:
     def __init__(self, llm_client_func):
